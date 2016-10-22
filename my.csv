@@ -1,0 +1,3 @@
+type,amount,denom,time
+buy,10,usd,Sat Oct 22 2016 01:10:03 GMT+0000 (UTC)
+sell,40,usd,Sat Oct 22 2016 01:10:07 GMT+0000 (UTC)

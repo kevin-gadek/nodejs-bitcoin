@@ -2,6 +2,9 @@
 var http = require('http');
 var res = require('request');
 var repl = require('repl');
+var fs = require('fs');
+var csv = require('fast-csv');
+var uu = require('underscore');
 
 var orders = [];
 var orderIndex = 0;
@@ -119,10 +122,29 @@ var eval_funct = function(cmd, context, filename, callback){
 	              console.log("===CURRENT ORDERS===");
 	              //console.log(orders[i].time);
 	              //console.log("\n");
+	
+                      var ws = fs.createWriteStream("my.csv");
+                      //console.log(orders);               
+	             /*
+	              var data = uu.map(orders, function(){
+			  return {"timestamp": orders.time,
+				  "type": orders.type,
+				  "amount": orders.amount,
+				  "currency" : orders.denom};
+		      });
+	              console.log(data);
+	           */
+		
+		      csv.write(orders, {headers: true}).pipe(ws);
+
 	              for(var i = 0; i < orderIndex; i++)
 	                  {
 			      console.log(orders[i].time + " : " + orders[i].type + " " + orders[i].amount + " : UNFILLED" );
-			  }	              
+			      		           
+			  }	   
+	                       
+	                                   
+                      
                       break;
 	default:
 	              console.log("Unknown command: " + input[0] + "\n");
