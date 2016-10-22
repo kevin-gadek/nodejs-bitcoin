@@ -13,11 +13,11 @@ var parsedOutput;
 res('https://api.coinbase.com/v1/currencies/exchange_rates', function(error, response, body){
     if(!error && response.statusCode == 200){
 	parsedOutput = JSON.parse(body);
+
         }	
 });
 
 var eval_funct = function(cmd, context, filename, callback){
-
     var input = cmd.toLowerCase().split(" ");
     //need to convert string to float for further manipulation
     var amount = parseFloat(input[1]);
@@ -59,21 +59,22 @@ var eval_funct = function(cmd, context, filename, callback){
 		       //console.log(rate);
 		       var rate2 = parsedOutput[xxx_to_btc = convert1]; 
 		       orders[orderIndex++] = {
+			   timestamp:  time,
 			   type: 'buy',
 			   amount: amount,
-			   denom: denom,
-			   time: time,
+			   currency: denom,
+			   conversion_rate: rate1,
 		       };
 
 		       console.log("Order to buy " + amount + " " + denom + " worth of BTC queued @ " + rate1 + " BTC/" + denom + " (" + rate2 + " BTC)" );
 		       break;
 		   }else if(denom == "BTC"){
 		       orders[orderIndex++] = {
+			   timestamp: time,
 			   type: 'buy',
 			   amount: amount,
-			   denom: denom,
-			   time: time,
-
+			   currency: denom,
+			   conversion_rate: 0,
 		       };
 		       console.log("Order to buy " + amount + " BTC queued");
 		       
@@ -96,10 +97,11 @@ var eval_funct = function(cmd, context, filename, callback){
 			var rate1 = parsedOutput[btc_to_xxx = convert2];
 			var rate2 = parsedOutput[xxx_to_btc = convert1];
 			orders[orderIndex++] = {
+			    timestamp: time,
 			    type: 'sell',
 			    amount: amount,
-			    denom: denom,
-			    time: time,
+			    currency: denom,
+			    conversion_rate: rate1,
 			};
 
 			console.log("Order to sell " + amount + " " + denom + " worth of BTC queued @ " + rate1 + " BTC/" + denom + " (" + rate2 + " BTC)");
@@ -107,10 +109,11 @@ var eval_funct = function(cmd, context, filename, callback){
 		    }else if(denom == "BTC"){
 
 			orders[orderIndex++] = {
+			    timestamp: time,
 			    type: 'sell',
 			    amount: amount,
-			    denom: denom,
-			    time: time,
+			    currency: denom,
+			    conversion_rate: 0,
 			};
 			console.log("Order to sell " + amount + " BTC queued");
 			break;
@@ -139,7 +142,7 @@ var eval_funct = function(cmd, context, filename, callback){
 
 	              for(var i = 0; i < orderIndex; i++)
 	                  {
-			      console.log(orders[i].time + " : " + orders[i].type + " " + orders[i].amount + " : UNFILLED" );
+			      console.log(orders[i].timestamp + " : " + orders[i].type + " " + orders[i].amount + " : UNFILLED" );
 			      		           
 			  }	   
 	                       
